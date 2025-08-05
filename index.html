@@ -251,15 +251,46 @@
 
         // Button functionality
         const buttons = document.querySelectorAll('.sound-button');
-        const audioCache = new Map();
+        const audioPool = new Map(); // Pool of audio instances for each sound
+        const maxPoolSize = 5; // Maximum concurrent instances per sound
 
-        // Preload existing audio
-        const existingSounds = ['kids_back_down_the_mines', 'GMAFBP'];
+        // Initialize audio pools for existing sounds
+        const existingSounds = ['kids_back_down_the_mines', 'GMAFBP', 'boys_roll', 'girls_roll', 'yeahhhhh'];
         existingSounds.forEach(sound => {
-            const audio = new Audio(`sounds/${sound}.mp3`);
-            audio.preload = 'auto';
-            audioCache.set(sound, audio);
+            const pool = [];
+            for (let i = 0; i < maxPoolSize; i++) {
+                const audio = new Audio(`sounds/${sound}.mp3`);
+                audio.preload = 'auto';
+                pool.push(audio);
+            }
+            audioPool.set(sound, pool);
         });
+
+        // Function to get available audio instance from pool
+        function getAudioInstance(soundName) {
+            if (!audioPool.has(soundName)) {
+                // Create new pool for this sound
+                const pool = [];
+                for (let i = 0; i < maxPoolSize; i++) {
+                    const audio = new Audio(`sounds/${soundName}.mp3`);
+                    audio.preload = 'auto';
+                    pool.push(audio);
+                }
+                audioPool.set(soundName, pool);
+            }
+
+            const pool = audioPool.get(soundName);
+            
+            // Find an available audio instance (not currently playing)
+            for (let audio of pool) {
+                if (audio.paused || audio.ended || audio.currentTime === 0) {
+                    return audio;
+                }
+            }
+            
+            // If all are busy, use the first one anyway (overlap is OK)
+            return pool[0];
+        }
 
         buttons.forEach(button => {
             button.addEventListener('click', function() {
@@ -271,25 +302,31 @@
                     this.classList.remove('playing');
                 }, 300);
 
-                // Play sound if available
-                if (audioCache.has(soundName)) {
-                    const audio = audioCache.get(soundName);
-                    audio.currentTime = 0; // Reset to beginning
-                    audio.play().catch(e => console.log('Audio play failed:', e));
-                } else {
-                    // Try to play sound file if it exists
-                    const audio = new Audio(`sounds/${soundName}.mp3`);
-                    audio.play().then(() => {
-                        // Cache the audio for next time
-                        audioCache.set(soundName, audio);
-                    }).catch(e => {
-                        console.log(`Sound file not found: ${soundName}.mp3`);
-                        // Visual feedback even without sound
-                        this.style.background = 'linear-gradient(145deg, #666, #999)';
-                        setTimeout(() => {
-                            this.style.background = '';
-                        }, 200);
-                    });
+                try {
+                    const audio = getAudioInstance(soundName);
+                    
+                    // Reset audio to beginning
+                    audio.currentTime = 0;
+                    
+                    // Play the sound
+                    const playPromise = audio.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.catch(e => {
+                            console.log('Audio play failed:', e);
+                            // Try creating a fresh audio instance
+                            const freshAudio = new Audio(`sounds/${soundName}.mp3`);
+                            freshAudio.play().catch(err => console.log('Fresh audio also failed:', err));
+                        });
+                    }
+                    
+                } catch (e) {
+                    console.log(`Sound error for ${soundName}:`, e);
+                    // Visual feedback for missing sound
+                    this.style.background = 'linear-gradient(145deg, #666, #999)';
+                    setTimeout(() => {
+                        this.style.background = '';
+                    }, 200);
                 }
             });
         });
