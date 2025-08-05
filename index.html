@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Button Box</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FF6B35">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+    <meta name="apple-mobile-web-app-title" content="Button Box">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+            font-family: 'Arial Black', Arial, sans-serif;
+            padding: 10px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            color: #FF6B35;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #E94560;
+            font-size: 1rem;
+            font-weight: normal;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+            flex-grow: 1;
+        }
+
+        .sound-button {
+            background: linear-gradient(145deg, #FF6B35, #E94560);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 20px;
+            min-height: 80px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .sound-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .sound-button:hover:before {
+            left: 100%;
+        }
+
+        .sound-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .sound-button:active {
+            transform: translateY(0px) scale(0.95);
+            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .sound-button.playing {
+            animation: pulse 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .sound-button.boys-roll {
+            background: linear-gradient(145deg, #00D2FF, #3A7BD5);
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+        }
+
+        .sound-button.boys-roll:hover {
+            box-shadow: 0 6px 20px rgba(0, 210, 255, 0.4);
+        }
+
+        .sound-button.girls-roll {
+            background: linear-gradient(145deg, #FF69B4, #FF1493);
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+        }
+
+        .sound-button.girls-roll:hover {
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .sound-button.purple {
+            background: linear-gradient(145deg, #8A2BE2, #4B0082);
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        }
+
+        .sound-button.purple:hover {
+            box-shadow: 0 6px 20px rgba(138, 43, 226, 0.4);
+        }
+
+        .sound-button.red {
+            background: linear-gradient(145deg, #FF416C, #FF4B2B);
+            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.3);
+        }
+
+        .sound-button.red:hover {
+            box-shadow: 0 6px 20px rgba(255, 65, 108, 0.4);
+        }
+
+        .sound-button.green {
+            background: linear-gradient(145deg, #56AB2F, #A8E6CF);
+            box-shadow: 0 4px 15px rgba(86, 171, 47, 0.3);
+        }
+
+        .sound-button.green:hover {
+            box-shadow: 0 6px 20px rgba(86, 171, 47, 0.4);
+        }
+
+        .sound-button.orange {
+            background: linear-gradient(145deg, #FF8C00, #FF6347);
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        .sound-button.orange:hover {
+            box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
+        }
+
+        .sound-button.teal {
+            background: linear-gradient(145deg, #20B2AA, #008B8B);
+            box-shadow: 0 4px 15px rgba(32, 178, 170, 0.3);
+        }
+
+        .sound-button.teal:hover {
+            box-shadow: 0 6px 20px rgba(32, 178, 170, 0.4);
+        }
+
+        .sound-button.gold {
+            background: linear-gradient(145deg, #FFD700, #FFA500);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .sound-button.gold:hover {
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .sound-button.indigo {
+            background: linear-gradient(145deg, #4B0082, #663399);
+            box-shadow: 0 4px 15px rgba(75, 0, 130, 0.3);
+        }
+
+        .sound-button.indigo:hover {
+            box-shadow: 0 6px 20px rgba(75, 0, 130, 0.4);
+        }
+
+        .sound-button.coral {
+            background: linear-gradient(145deg, #FF7F50, #FF6347);
+            box-shadow: 0 4px 15px rgba(255, 127, 80, 0.3);
+        }
+
+        .sound-button.coral:hover {
+            box-shadow: 0 6px 20px rgba(255, 127, 80, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .sound-button {
+                font-size: 0.9rem;
+                padding: 15px;
+                min-height: 70px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔘 Button Box 🔘</h1>
+        <p>Tap the buttons for sound effects!</p>
+    </div>
+
+    <div class="button-grid">
+        <button class="sound-button boys-roll" data-sound="boys_roll">Boys Roll</button>
+        <button class="sound-button girls-roll" data-sound="girls_roll">Girls Roll</button>
+        <button class="sound-button purple" data-sound="zdravstvuyte">Здравствуйте</button>
+        <button class="sound-button red" data-sound="GMAFBP">GMAFBP</button>
+        <button class="sound-button indigo" data-sound="nyet">нет</button>
+        <button class="sound-button green" data-sound="pig_out">Pig Out</button>
+        <button class="sound-button orange" data-sound="double_leaning_jowler">Double Leaning Jowler</button>
+        <button class="sound-button teal" data-sound="kids_back_down_the_mines">Kids back down the mines</button>
+        <button class="sound-button coral" data-sound="enough">Enough</button>
+        <button class="sound-button gold" data-sound="yeahhhhh">YEAHHHHH</button>
+        <button class="sound-button purple" data-sound="towel">Towel</button>
+        <button class="sound-button orange" data-sound="bop_em">Bop Em</button>
+    </div>
+
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => console.log('SW registered'))
+                .catch(error => console.log('SW registration failed'));
+        }
+
+        // Button functionality
+        const buttons = document.querySelectorAll('.sound-button');
+        const audioCache = new Map();
+
+        // Preload existing audio
+        const existingSounds = ['kids_back_down_the_mines', 'GMAFBP'];
+        existingSounds.forEach(sound => {
+            const audio = new Audio(`sounds/${sound}.mp3`);
+            audio.preload = 'auto';
+            audioCache.set(sound, audio);
+        });
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                const soundName = this.dataset.sound;
+                
+                // Add visual feedback
+                this.classList.add('playing');
+                setTimeout(() => {
+                    this.classList.remove('playing');
+                }, 300);
+
+                // Play sound if available
+                if (audioCache.has(soundName)) {
+                    const audio = audioCache.get(soundName);
+                    audio.currentTime = 0; // Reset to beginning
+                    audio.play().catch(e => console.log('Audio play failed:', e));
+                } else {
+                    // Try to play sound file if it exists
+                    const audio = new Audio(`sounds/${soundName}.mp3`);
+                    audio.play().then(() => {
+                        // Cache the audio for next time
+                        audioCache.set(soundName, audio);
+                    }).catch(e => {
+                        console.log(`Sound file not found: ${soundName}.mp3`);
+                        // Visual feedback even without sound
+                        this.style.background = 'linear-gradient(145deg, #666, #999)';
+                        setTimeout(() => {
+                            this.style.background = '';
+                        }, 200);
+                    });
+                }
+            });
+        });
+
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Handle install prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+    </script>
+</body>
+</html>

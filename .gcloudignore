@@ -1,0 +1,24 @@
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation (keep README for reference)
+CLAUDE.md
+
+# CI/CD
+.github/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local

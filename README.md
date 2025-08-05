@@ -28,10 +28,10 @@ Here are the buttons I want to start with:
 - Enough
 - YEAHHHHH
 - Towel
+- Bop Em
 
 Assume the sounds will be bundled with the app and will be in the same directory as the HTML file.
 
 Assume that new sounds will need to be added routinely.
 
 Create a plan first and run it by me before you start coding - ask any questions up front.
-# button-box
