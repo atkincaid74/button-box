@@ -1,0 +1,11 @@
+.git
+.github
+.gitignore
+.gcloudignore
+.idea
+.claude
+README.md
+CLAUDE.md
+deploy-instructions.md
+*.md
+.DS_Store

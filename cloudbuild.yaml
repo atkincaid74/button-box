@@ -1,0 +1,51 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-east4-docker.pkg.dev/k-button-box/cloud-run-source-deploy/button-box:$COMMIT_SHA'
+      - '-t'
+      - 'us-east4-docker.pkg.dev/k-button-box/cloud-run-source-deploy/button-box:latest'
+      - '.'
+
+  # Push the container image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '--all-tags'
+      - 'us-east4-docker.pkg.dev/k-button-box/cloud-run-source-deploy/button-box'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'button-box'
+      - '--image'
+      - 'us-east4-docker.pkg.dev/k-button-box/cloud-run-source-deploy/button-box:$COMMIT_SHA'
+      - '--region'
+      - 'us-east4'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '8080'
+      - '--memory'
+      - '256Mi'
+      - '--cpu'
+      - '1'
+      - '--min-instances'
+      - '0'
+      - '--max-instances'
+      - '10'
+      - '--timeout'
+      - '60'
+
+images:
+  - 'us-east4-docker.pkg.dev/k-button-box/cloud-run-source-deploy/button-box:$COMMIT_SHA'
+  - 'us-east4-docker.pkg.dev/k-button-box/cloud-run-source-deploy/button-box:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
