@@ -1,41 +1,57 @@
-name: Deploy to Google Cloud Storage
+# DEPRECATED: This workflow is no longer used
+# Deployment now happens via Cloud Build triggers
+# See cloudbuild.yaml and deploy-instructions.md for current setup
+#
+# This file is kept for reference but will not run
+# To re-enable, remove the comments below
+
+name: Deploy to Google Cloud Storage (DEPRECATED)
 
 on:
-  push:
-    branches: [ main ]
+  # Disabled - remove comments to re-enable
+  # push:
+  #   branches: [ main ]
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v2
-      with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-    
-    - name: Setup Google Cloud CLI
-      uses: google-github-actions/setup-gcloud@v2
-    
-    - name: Deploy to Cloud Storage
+    - name: Deprecated Notice
       run: |
-        # Sync files to bucket
-        gsutil -m rsync -r -d . gs://${{ secrets.GCP_BUCKET_NAME }}
-        
-        # Set public read permissions
-        gsutil -m acl ch -r -u AllUsers:R gs://${{ secrets.GCP_BUCKET_NAME }}
-        
-        # Set proper MIME types
-        gsutil -m setmeta -h "Content-Type:text/html" gs://${{ secrets.GCP_BUCKET_NAME }}/index.html
-        gsutil -m setmeta -h "Content-Type:application/json" gs://${{ secrets.GCP_BUCKET_NAME }}/manifest.json
-        gsutil -m setmeta -h "Content-Type:application/javascript" gs://${{ secrets.GCP_BUCKET_NAME }}/sw.js
-        gsutil -m setmeta -h "Content-Type:audio/mpeg" gs://${{ secrets.GCP_BUCKET_NAME }}/sounds/*.mp3
-    
-    - name: Set bucket website configuration
-      run: |
-        gsutil web set -m index.html -e index.html gs://${{ secrets.GCP_BUCKET_NAME }}
+        echo "⚠️ This workflow is deprecated"
+        echo "Deployment now happens automatically via Cloud Build"
+        echo "See cloudbuild.yaml for the current deployment configuration"
+        exit 1
+
+    # OLD CLOUD STORAGE DEPLOYMENT (no longer used)
+    # - name: Checkout code
+    #   uses: actions/checkout@v4
+    #
+    # - name: Authenticate to Google Cloud
+    #   uses: google-github-actions/auth@v2
+    #   with:
+    #     credentials_json: ${{ secrets.GCP_SA_KEY }}
+    #     project_id: ${{ secrets.GCP_PROJECT_ID }}
+    #
+    # - name: Setup Google Cloud CLI
+    #   uses: google-github-actions/setup-gcloud@v2
+    #
+    # - name: Deploy to Cloud Storage
+    #   run: |
+    #     # Sync files to bucket
+    #     gsutil -m rsync -r -d . gs://${{ secrets.GCP_BUCKET_NAME }}
+    #
+    #     # Set public read permissions
+    #     gsutil -m acl ch -r -u AllUsers:R gs://${{ secrets.GCP_BUCKET_NAME }}
+    #
+    #     # Set proper MIME types
+    #     gsutil -m setmeta -h "Content-Type:text/html" gs://${{ secrets.GCP_BUCKET_NAME }}/index.html
+    #     gsutil -m setmeta -h "Content-Type:application/json" gs://${{ secrets.GCP_BUCKET_NAME }}/manifest.json
+    #     gsutil -m setmeta -h "Content-Type:application/javascript" gs://${{ secrets.GCP_BUCKET_NAME }}/sw.js
+    #     gsutil -m setmeta -h "Content-Type:audio/mpeg" gs://${{ secrets.GCP_BUCKET_NAME }}/sounds/*.mp3
+    #
+    # - name: Set bucket website configuration
+    #   run: |
+    #     gsutil web set -m index.html -e index.html gs://${{ secrets.GCP_BUCKET_NAME }}
